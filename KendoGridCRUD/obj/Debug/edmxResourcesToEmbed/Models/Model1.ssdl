@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="bytecodeDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="tblCity">
+    <Key>
+      <PropertyRef Name="tblCityID" />
+    </Key>
+    <Property Name="tblCityID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CityName" Type="varchar" MaxLength="50" />
+    <Property Name="tblStateID" Type="int" />
+  </EntityType>
+  <EntityType Name="tblDesignation">
+    <Key>
+      <PropertyRef Name="tblDesignationID" />
+    </Key>
+    <Property Name="tblDesignationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Designation" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="tblEmployee">
+    <Key>
+      <PropertyRef Name="tblEmployeeID" />
+    </Key>
+    <Property Name="tblEmployeeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="50" />
+    <Property Name="tblDesignationID" Type="int" />
+    <Property Name="tblCityID" Type="int" />
+    <Property Name="Salary" Type="int" />
+  </EntityType>
+  <EntityType Name="tblState">
+    <Key>
+      <PropertyRef Name="tblStateID" />
+    </Key>
+    <Property Name="tblStateID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="StateName" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <Association Name="FK_tblCity_tblState">
+    <End Role="tblState" Type="Self.tblState" Multiplicity="0..1" />
+    <End Role="tblCity" Type="Self.tblCity" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblState">
+        <PropertyRef Name="tblStateID" />
+      </Principal>
+      <Dependent Role="tblCity">
+        <PropertyRef Name="tblStateID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblEmployee_tblDesignation">
+    <End Role="tblDesignation" Type="Self.tblDesignation" Multiplicity="0..1" />
+    <End Role="tblEmployee" Type="Self.tblEmployee" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblDesignation">
+        <PropertyRef Name="tblDesignationID" />
+      </Principal>
+      <Dependent Role="tblEmployee">
+        <PropertyRef Name="tblDesignationID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblEmployee_tblDesignation1">
+    <End Role="tblDesignation" Type="Self.tblDesignation" Multiplicity="0..1" />
+    <End Role="tblEmployee" Type="Self.tblEmployee" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblDesignation">
+        <PropertyRef Name="tblDesignationID" />
+      </Principal>
+      <Dependent Role="tblEmployee">
+        <PropertyRef Name="tblDesignationID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Function Name="JoinEmployeeTable" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="StateID" Type="int" Mode="In" />
+    <Parameter Name="CityID" Type="int" Mode="In" />
+    <Parameter Name="Salary" Type="int" Mode="In" />
+    <Parameter Name="Search" Type="varchar(max)" Mode="In" />
+  </Function>
+  <Function Name="ShowCity" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="ShowState" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <EntityContainer Name="bytecodeDBModelStoreContainer">
+    <EntitySet Name="tblCity" EntityType="Self.tblCity" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="tblDesignation" EntityType="Self.tblDesignation" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="tblEmployee" EntityType="Self.tblEmployee" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="tblState" EntityType="Self.tblState" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_tblCity_tblState" Association="Self.FK_tblCity_tblState">
+      <End Role="tblState" EntitySet="tblState" />
+      <End Role="tblCity" EntitySet="tblCity" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblEmployee_tblDesignation" Association="Self.FK_tblEmployee_tblDesignation">
+      <End Role="tblDesignation" EntitySet="tblDesignation" />
+      <End Role="tblEmployee" EntitySet="tblEmployee" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblEmployee_tblDesignation1" Association="Self.FK_tblEmployee_tblDesignation1">
+      <End Role="tblDesignation" EntitySet="tblDesignation" />
+      <End Role="tblEmployee" EntitySet="tblEmployee" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

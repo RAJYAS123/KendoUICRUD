@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="bytecodeDBModelStoreContainer" CdmEntityContainer="DatabaseContext">
+    <EntitySetMapping Name="tblCities">
+      <EntityTypeMapping TypeName="bytecodeDBModel.tblCity">
+        <MappingFragment StoreEntitySet="tblCity">
+          <ScalarProperty Name="tblCityID" ColumnName="tblCityID" />
+          <ScalarProperty Name="CityName" ColumnName="CityName" />
+          <ScalarProperty Name="tblStateID" ColumnName="tblStateID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tblDesignations">
+      <EntityTypeMapping TypeName="bytecodeDBModel.tblDesignation">
+        <MappingFragment StoreEntitySet="tblDesignation">
+          <ScalarProperty Name="tblDesignationID" ColumnName="tblDesignationID" />
+          <ScalarProperty Name="Designation" ColumnName="Designation" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tblEmployees">
+      <EntityTypeMapping TypeName="bytecodeDBModel.tblEmployee">
+        <MappingFragment StoreEntitySet="tblEmployee">
+          <ScalarProperty Name="tblEmployeeID" ColumnName="tblEmployeeID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="tblDesignationID" ColumnName="tblDesignationID" />
+          <ScalarProperty Name="tblCityID" ColumnName="tblCityID" />
+          <ScalarProperty Name="Salary" ColumnName="Salary" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tblStates">
+      <EntityTypeMapping TypeName="bytecodeDBModel.tblState">
+        <MappingFragment StoreEntitySet="tblState">
+          <ScalarProperty Name="tblStateID" ColumnName="tblStateID" />
+          <ScalarProperty Name="StateName" ColumnName="StateName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="ShowState" FunctionName="bytecodeDBModel.Store.ShowState">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="bytecodeDBModel.ShowState_Result">
+          <ScalarProperty Name="tblStateID" ColumnName="tblStateID" />
+          <ScalarProperty Name="StateName" ColumnName="StateName" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="ShowCity" FunctionName="bytecodeDBModel.Store.ShowCity">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="bytecodeDBModel.ShowCity_Result">
+          <ScalarProperty Name="tblCityID" ColumnName="tblCityID" />
+          <ScalarProperty Name="CityName" ColumnName="CityName" />
+          <ScalarProperty Name="tblStateID" ColumnName="tblStateID" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="JoinEmployeeTable" FunctionName="bytecodeDBModel.Store.JoinEmployeeTable">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="bytecodeDBModel.JoinEmployeeTable_Result1">
+          <ScalarProperty Name="tblEmployeeID" ColumnName="tblEmployeeID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Designation" ColumnName="Designation" />
+          <ScalarProperty Name="CityName" ColumnName="CityName" />
+          <ScalarProperty Name="tblCityID" ColumnName="tblCityID" />
+          <ScalarProperty Name="Salary" ColumnName="Salary" />
+          <ScalarProperty Name="StateName" ColumnName="StateName" />
+          <ScalarProperty Name="tblStateID" ColumnName="tblStateID" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+  </EntityContainerMapping>
+</Mapping>

@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="bytecodeDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="tblCity">
+    <Key>
+      <PropertyRef Name="tblCityID" />
+    </Key>
+    <Property Name="tblCityID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CityName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="tblStateID" Type="Int32" />
+    <NavigationProperty Name="tblState" Relationship="Self.FK_tblCity_tblState" FromRole="tblCity" ToRole="tblState" />
+  </EntityType>
+  <EntityType Name="tblDesignation">
+    <Key>
+      <PropertyRef Name="tblDesignationID" />
+    </Key>
+    <Property Name="tblDesignationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Designation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="tblEmployees" Relationship="Self.FK_tblEmployee_tblDesignation" FromRole="tblDesignation" ToRole="tblEmployee" />
+  </EntityType>
+  <EntityType Name="tblEmployee">
+    <Key>
+      <PropertyRef Name="tblEmployeeID" />
+    </Key>
+    <Property Name="tblEmployeeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="tblDesignationID" Type="Int32" />
+    <Property Name="tblCityID" Type="Int32" />
+    <Property Name="Salary" Type="Int32" />
+    <NavigationProperty Name="tblDesignation" Relationship="Self.FK_tblEmployee_tblDesignation" FromRole="tblEmployee" ToRole="tblDesignation" />
+  </EntityType>
+  <EntityType Name="tblState">
+    <Key>
+      <PropertyRef Name="tblStateID" />
+    </Key>
+    <Property Name="tblStateID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="StateName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="tblCities" Relationship="Self.FK_tblCity_tblState" FromRole="tblState" ToRole="tblCity" />
+  </EntityType>
+  <Association Name="FK_tblCity_tblState">
+    <End Role="tblState" Type="Self.tblState" Multiplicity="0..1" />
+    <End Role="tblCity" Type="Self.tblCity" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblState">
+        <PropertyRef Name="tblStateID" />
+      </Principal>
+      <Dependent Role="tblCity">
+        <PropertyRef Name="tblStateID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblEmployee_tblDesignation">
+    <End Role="tblDesignation" Type="Self.tblDesignation" Multiplicity="0..1" />
+    <End Role="tblEmployee" Type="Self.tblEmployee" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblDesignation">
+        <PropertyRef Name="tblDesignationID" />
+      </Principal>
+      <Dependent Role="tblEmployee">
+        <PropertyRef Name="tblDesignationID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblEmployee_tblDesignation1">
+    <End Role="tblDesignation" Type="Self.tblDesignation" Multiplicity="0..1" />
+    <End Role="tblEmployee" Type="Self.tblEmployee" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblDesignation">
+        <PropertyRef Name="tblDesignationID" />
+      </Principal>
+      <Dependent Role="tblEmployee">
+        <PropertyRef Name="tblDesignationID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="DatabaseContext" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="tblCities" EntityType="Self.tblCity" />
+    <EntitySet Name="tblDesignations" EntityType="Self.tblDesignation" />
+    <EntitySet Name="tblEmployees" EntityType="Self.tblEmployee" />
+    <EntitySet Name="tblStates" EntityType="Self.tblState" />
+    <AssociationSet Name="FK_tblCity_tblState" Association="Self.FK_tblCity_tblState">
+      <End Role="tblState" EntitySet="tblStates" />
+      <End Role="tblCity" EntitySet="tblCities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblEmployee_tblDesignation" Association="Self.FK_tblEmployee_tblDesignation">
+      <End Role="tblDesignation" EntitySet="tblDesignations" />
+      <End Role="tblEmployee" EntitySet="tblEmployees" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblEmployee_tblDesignation1" Association="Self.FK_tblEmployee_tblDesignation1">
+      <End Role="tblDesignation" EntitySet="tblDesignations" />
+      <End Role="tblEmployee" EntitySet="tblEmployees" />
+    </AssociationSet>
+    <FunctionImport Name="ShowState" ReturnType="Collection(bytecodeDBModel.ShowState_Result)" />
+    <FunctionImport Name="ShowCity" ReturnType="Collection(bytecodeDBModel.ShowCity_Result)" />
+    <FunctionImport Name="JoinEmployeeTable" ReturnType="Collection(bytecodeDBModel.JoinEmployeeTable_Result1)">
+      <Parameter Name="StateID" Mode="In" Type="Int32" />
+      <Parameter Name="CityID" Mode="In" Type="Int32" />
+      <Parameter Name="Salary" Mode="In" Type="Int32" />
+      <Parameter Name="Search" Mode="In" Type="String" />
+    </FunctionImport>
+  </EntityContainer>
+  <ComplexType Name="JoinEmployeeTable_Result">
+    <Property Type="Int32" Name="tblEmployeeID" Nullable="false" />
+    <Property Type="String" Name="Name" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="Designation" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="CityName" Nullable="true" MaxLength="50" />
+    <Property Type="Int32" Name="Salary" Nullable="true" />
+    <Property Type="String" Name="StateName" Nullable="true" MaxLength="50" />
+  </ComplexType>
+  <ComplexType Name="ShowState_Result">
+    <Property Type="Int32" Name="tblStateID" Nullable="false" />
+    <Property Type="String" Name="StateName" Nullable="true" MaxLength="50" />
+  </ComplexType>
+  <ComplexType Name="ShowCity_Result">
+    <Property Type="Int32" Name="tblCityID" Nullable="false" />
+    <Property Type="String" Name="CityName" Nullable="true" MaxLength="50" />
+    <Property Type="Int32" Name="tblStateID" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="JoinEmployeeTable_Result1">
+    <Property Type="Int32" Name="tblEmployeeID" Nullable="false" />
+    <Property Type="String" Name="Name" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="Designation" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="CityName" Nullable="true" MaxLength="50" />
+    <Property Type="Int32" Name="tblCityID" Nullable="false" />
+    <Property Type="Int32" Name="Salary" Nullable="true" />
+    <Property Type="String" Name="StateName" Nullable="true" MaxLength="50" />
+    <Property Type="Int32" Name="tblStateID" Nullable="false" />
+  </ComplexType>
+</Schema>

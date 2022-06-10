@@ -1,0 +1,241 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="~/Content/kendo/2013.3.1119/kendo.default.min.css" rel="stylesheet" />
+    <link href="~/Content/kendo/2013.3.1119/kendo.common.min.css" rel="stylesheet" />
+    <script src="~/Scripts/kendo/2013.3.1119/jquery.min.js"></script>
+    <script src="~/Scripts/kendo/2013.3.1119/kendo.web.min.js"></script>
+</head>
+<body>
+
+    <input type="text" placeholder="Search Here" id="txtsearch" />
+    <br />
+    <br />
+    <div id="Grid">
+
+    </div>
+    <br />
+    <br />
+    <div>
+        <label>Select State</label>
+        <input id="State" />
+        <label>Select City</label>
+        <input id="City" />
+        <label>Select Salary</label>
+        <input id="Salary" />
+    </div>
+
+</body>
+</html>
+
+
+
+<script>
+    $(document).ready(function () {
+        $("#Grid").kendoGrid({
+
+            dataSource: new kendo.data.DataSource({
+                type: "json",
+                transport:
+                {
+                    read: "/Home/GetEmployees",
+                },
+                batch: true,
+                pageSize: 20,
+                schema: {
+                    data: function (response) {
+                        var stateKendo = $("#State").data("kendoDropDownList");
+                        var cityKendo = $("#City").data("kendoDropDownList");
+                        stateKendo.setDataSource(response.stateList);
+                        cityKendo.setDataSource(response.cityList);
+                        return response.employeeList;
+                    },
+
+                    model: {
+
+                        id: "tblEmployeeID",
+                        fields: {
+                            tblEmployeeID: { editable: false, nullable: true },
+                            Name: {},
+                            Designation: {},
+                            StateName: {},
+                            CityName: {}
+                        }
+                    }
+                },
+            }),
+            refresh: false,
+            columns: [
+
+                { field: "tblEmployeeID", title: "Employee Id", width: "120px" },
+                { field: "Name", title: "Name", width: "120px" },
+                { field: "Designation", width: "120px" },
+                { field: "StateName", title: "State", width: "120px" },
+                { field: "CityName", title: "City", width: "120px" },
+                { field: "Salary", title: "Salary", width: "120px" },
+                { command: ["edit", "destroy"], title: "&nbsp;", width: "250px" }
+            ],
+        });
+        //var grid = $("#Grid").data("kendoGrid");
+        //grid.refresh();
+
+        $("#State").kendoDropDownList({
+            dataTextField: "StateName",
+            dataValueField: "tblStateID",
+            optionLabel: "All",
+        });
+
+        $("#State").change(function () {
+            $.ajax({
+                type: 'GET',
+                url: '/Home/GetEmployees',
+                contentType: 'application/json; charset=utf-8',
+                data: { StateID: $("#State").data("kendoDropDownList").value(), CityID: $("#City").data("kendoDropDownList").value(), Salary: $("#Salary").data("kendoDropDownList").value() },
+                dataType: 'json',
+                success: function (d) {
+                    var dataSource = new kendo.data.DataSource({
+                        data: d.employeeList
+                    });
+                    var grid = $("#Grid").data("kendoGrid");
+                    grid.setDataSource(dataSource);
+                },
+                error: function (errormessage) {
+
+                }
+            });
+
+            $('#City').empty();
+            $.ajax({
+                type: 'GET',
+                url: '/Home/GetCityByStateId',
+                contentType: 'application/json; charset=utf-8',
+                data: { StateID: $("#State").data("kendoDropDownList").value() },
+                dataType: 'json',
+                success: function (d) {
+
+                    var dataSource = new kendo.data.DataSource({
+                        data: d
+                    });
+
+                    var grid = $("#City").data("kendoDropDownList");
+                    grid.setDataSource(dataSource);
+
+                },
+                error: function (errormessage) {
+
+                }
+            });
+
+        });
+
+        $("#City").kendoDropDownList({
+            dataTextField: "CityName",
+            dataValueField: "tblCityID",
+            dataSource: {
+                type: "json",
+                transport: {
+                    read: "/Home/GetCity"
+                }
+            },
+            optionLabel: "All",
+
+        });
+
+
+
+        $("#City").change(function () {
+            $.ajax({
+                type: 'GET',
+                url: '/Home/GetEmployees',
+                contentType: 'application/json; charset=utf-8',
+                data: { StateID: $("#State").data("kendoDropDownList").value(), CityID: $("#City").data("kendoDropDownList").value(), Salary: $("#Salary").data("kendoDropDownList").value() },
+                dataType: 'json',
+                success: function (d) {
+
+                    var dataSource = new kendo.data.DataSource({
+                        data: d.employeeList
+                    });
+                    var grid = $("#Grid").data("kendoGrid");
+                    grid.setDataSource(dataSource);
+                },
+                error: function (errormessage) {
+
+                }
+            });
+
+        });
+
+        $("#Salary").kendoDropDownList({
+            dataTextField: "SalaryText",
+            dataValueField: "SalaryID",
+            dataSource: {
+                data: [{ SalaryID: 0, SalaryText: 'All' }, { SalaryID: 1, SalaryText: '0-10000' }, { SalaryID: 2, SalaryText: '10000-20000' }, { SalaryID: 3, SalaryText: '20000-Above' }]
+            }
+        });
+
+        $("#Salary").change(function () {
+            var getSalaryID = $("#Salary").data("kendoDropDownList").value();
+            $.ajax({
+                type: 'GET',
+                url: '/Home/GetEmployees',
+                contentType: 'application/json; charset=utf-8',
+                data: { StateID: $("#State").data("kendoDropDownList").value(), CityID: $("#City").data("kendoDropDownList").value(), Salary: $("#Salary").data("kendoDropDownList").value() },
+                dataType: 'json',
+                success: function (result) {
+                    var dataSource = new kendo.data.DataSource({
+                        data: result.employeeList
+                    });
+                    var grid = $("#Grid").data("kendoGrid");
+                    grid.setDataSource(dataSource);
+                },
+                error: function (errormessage) {
+
+                }
+            });
+        });
+
+
+        $("#txtsearch").keypress(function () {
+
+            $.ajax({
+                type: 'GET',
+                url: '/Home/GetEmployees',
+                contentType: 'application/json; charset=utf-8',
+                data: { StateID: $("#State").data("kendoDropDownList").value(), CityID: $("#City").data("kendoDropDownList").value(), Salary: $("#Salary").data("kendoDropDownList").value(), Search: $("#txtsearch").val() },
+                dataType: 'json',
+                success: function (d) {
+                    var txtlen = $("#txtsearch").val().length;
+
+                    if (txtlen >= 3) {
+                        var dataSource = new kendo.data.DataSource({
+                            data: d.employeeList
+                        });
+                        var grid = $("#Grid").data("kendoGrid");
+                        grid.setDataSource(dataSource);
+                    }
+                    else {
+                        var dataSource = new kendo.data.DataSource({
+                            data: d.employeeList
+                        });
+                        var grid = $("#Grid").data("kendoGrid");
+                        grid.setDataSource(dataSource);
+                    }
+
+                },
+                error: function (errormessage) {
+
+                }
+            });
+        });
+    });
+</script>
+
+
